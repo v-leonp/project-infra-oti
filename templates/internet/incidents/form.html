@@ -1,0 +1,5 @@
+{% extends "administration/base_dashboard.html" %}
+{% block title %}Incidencia{% endblock %}
+{% block dashboard_content %}
+  <div class="mx-auto max-w-2xl rounded-2xl bg-white p-6"><form method="post">{% csrf_token %}{{ form.as_p }}<button class="btn-primary !w-auto px-4 py-2 text-sm">Guardar</button></form></div>
+{% endblock %}

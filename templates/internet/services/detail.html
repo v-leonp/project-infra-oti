@@ -1,0 +1,27 @@
+{% extends "administration/base_dashboard.html" %}
+{% load internet_tags %}
+{% block title %}Ficha {{ service.code }}{% endblock %}
+{% block dashboard_content %}
+  <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-100">
+    <div class="flex flex-wrap items-start justify-between gap-4">
+      <div>
+        <h1 class="text-2xl font-bold text-institutional-navy">{{ service.code }}</h1>
+        <p class="text-sm text-institutional-muted">{{ service.ods_oes_label }} · {{ service.site.name }}</p>
+      </div>
+      <span class="inline-flex rounded-full px-3 py-1 text-sm font-semibold ring-1 {{ service.display_status|service_status_badge }}">{{ service.display_status|service_status_label }}</span>
+    </div>
+    <dl class="mt-6 grid gap-4 sm:grid-cols-2 text-sm">
+      <div><dt class="text-institutional-muted">Proveedor</dt><dd class="font-semibold">{{ service.provider.legal_name }}</dd></div>
+      <div><dt class="text-institutional-muted">Velocidad</dt><dd class="font-semibold">{{ service.contracted_speed }} {{ service.speed_unit }}</dd></div>
+      <div><dt class="text-institutional-muted">Enlace</dt><dd>{{ service.get_link_type_display }}</dd></div>
+      <div><dt class="text-institutional-muted">IP pública</dt><dd>{{ service.public_ip|default:"—" }}</dd></div>
+      <div><dt class="text-institutional-muted">Vigencia</dt><dd>{{ service.start_date|date:"d/m/Y" }} — {{ service.end_date|date:"d/m/Y" }}</dd></div>
+      <div><dt class="text-institutional-muted">Responsable</dt><dd>{{ service.responsible.full_name|default:"—" }}</dd></div>
+    </dl>
+    <div class="mt-6 flex flex-wrap gap-2">
+      <a href="{% url 'internet:service_edit' service.pk %}" class="btn-primary !w-auto px-4 py-2 text-sm">Editar</a>
+      <a href="{% url 'internet:service_state' service.pk %}" class="rounded-lg border px-4 py-2 text-sm font-semibold">Cambiar estado</a>
+      <a href="{% url 'internet:service_list' %}" class="rounded-lg border px-4 py-2 text-sm">Volver al listado</a>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,16 @@
+# Opcional: solo cuando deje de usar SQLite y configure USE_SQLITE=False en .env
+# Uso: docker compose up -d
+services:
+  db:
+    image: postgres:18
+    environment:
+      POSTGRES_DB: infraestructura_oti
+      POSTGRES_USER: oti_user
+      POSTGRES_PASSWORD: oti_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

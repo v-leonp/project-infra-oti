@@ -1,0 +1,16 @@
+{% extends "administration/base_dashboard.html" %}
+{% block title %}Proveedores | Catálogos{% endblock %}
+{% block dashboard_content %}
+  <div class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100 sm:p-6">
+    <div class="flex flex-col gap-4 sm:flex-row sm:justify-between">
+      <div><h1 class="text-xl font-bold text-institutional-navy">Proveedores</h1><p class="text-sm text-institutional-muted">Centralice datos de proveedores y servicios.</p></div>
+      <a href="{% url 'catalogs:provider_create' %}" class="btn-primary !w-auto px-5 py-2.5 text-sm">+ Nuevo proveedor</a>
+    </div>
+    <form method="get" class="mt-6 grid gap-3 md:grid-cols-4" hx-get="{% url 'catalogs:provider_list' %}" hx-target="#provider-table" hx-push-url="true">
+      <input type="search" name="q" value="{{ form.q.value|default:'' }}" placeholder="Código, RUC, razón social..." class="rounded-lg border px-3 py-2 text-sm md:col-span-2" />
+      <select name="status" class="rounded-lg border px-3 py-2 text-sm">{% for v,l in form.fields.status.choices %}<option value="{{ v }}" {% if form.status.value == v %}selected{% endif %}>{{ l }}</option>{% endfor %}</select>
+      <select name="service_type" class="rounded-lg border px-3 py-2 text-sm"><option value="">Tipo servicio</option>{% for st in form.fields.service_type.queryset %}<option value="{{ st.pk }}" {% if form.service_type.value|stringformat:'s' == st.pk|stringformat:'s' %}selected{% endif %}>{{ st.name }}</option>{% endfor %}</select>
+    </form>
+    <div id="provider-table" class="mt-6">{% include "catalogs/providers/_table.html" %}</div>
+  </div>
+{% endblock %}

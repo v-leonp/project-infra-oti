@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block body %}
+  <div class="min-h-screen bg-[#E8F1F8] lg:flex">
+    <div
+      id="sidebar-backdrop"
+      class="fixed inset-0 z-40 hidden bg-institutional-navy/50 lg:hidden"
+      aria-hidden="true"
+    ></div>
+
+    <aside
+      id="app-sidebar"
+      class="fixed inset-y-0 left-0 z-50 flex w-72 -translate-x-full flex-col bg-institutional-navy text-white transition-transform duration-200 lg:static lg:translate-x-0"
+      aria-label="Menú principal"
+    >
+      <div class="flex items-center gap-3 border-b border-white/10 px-6 py-5">
+        <div class="flex h-10 w-10 items-center justify-center rounded-full bg-white/10" aria-hidden="true">
+          <span class="text-sm font-bold">OTI</span>
+        </div>
+        <div>
+          <p class="text-sm font-semibold leading-tight">Infraestructura OTI</p>
+          <p class="text-xs text-white/70">Sistema de gestión</p>
+        </div>
+      </div>
+      <nav class="flex-1 space-y-1 px-3 py-4" aria-label="Navegación">
+        <a
+          href="{% url 'accounts:welcome' %}"
+          class="dashboard-nav-link {% if request.resolver_match.url_name == 'welcome' %}is-active{% endif %}"
+        >
+          Inicio
+        </a>
+        {% if is_internet_module_user %}
+          {% include "internet/_sidebar_menu.html" %}
+        {% endif %}
+        {% if is_system_administrator %}
+          <a
+            href="{% url 'administration:user_list' %}"
+            class="dashboard-nav-link {% if 'user' in request.resolver_match.url_name %}is-active{% endif %}"
+          >
+            Usuarios
+          </a>
+          <a
+            href="{% url 'administration:group_permissions' %}"
+            class="dashboard-nav-link {% if request.resolver_match.url_name == 'group_permissions' %}is-active{% endif %}"
+          >
+            Grupos y permisos
+          </a>
+          <a
+            href="{% url 'administration:audit_list' %}"
+            class="dashboard-nav-link {% if request.resolver_match.url_name == 'audit_list' %}is-active{% endif %}"
+          >
+            Auditoría
+          </a>
+          {% include "catalogs/_sidebar_menu.html" %}
+        {% endif %}
+      </nav>
+    </aside>
+
+    <div class="flex min-h-screen min-w-0 flex-1 flex-col">
+      <header class="sticky top-0 z-30 border-b border-slate-200 bg-white px-4 py-3 sm:px-6">
+        <div class="flex items-center gap-3">
+          <button
+            type="button"
+            id="sidebar-toggle"
+            class="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg border border-slate-200 text-institutional-navy lg:hidden"
+            aria-controls="app-sidebar"
+            aria-expanded="false"
+            aria-label="Abrir menú"
+          >
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+          <div class="flex-1">
+            {% block header_search %}{% endblock %}
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="hidden text-right sm:block">
+              <p class="text-sm font-semibold text-institutional-navy">{{ user.get_full_name|default:user.username }}</p>
+              <p class="text-xs text-institutional-muted">{{ current_user_role_label }}</p>
+            </div>
+            <div
+              class="flex h-10 w-10 items-center justify-center rounded-full bg-institutional-action text-sm font-bold text-white"
+              aria-hidden="true"
+            >
+              {{ current_user_initials }}
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="flex-1 p-4 sm:p-6">
+        {% if messages %}
+          <div class="mb-4 space-y-2" role="status" aria-live="polite">
+            {% for message in messages %}
+              <div class="rounded-lg border px-4 py-3 text-sm {% if message.tags == 'error' %}border-red-200 bg-red-50 text-red-800{% else %}border-emerald-200 bg-emerald-50 text-emerald-900{% endif %}">
+                {{ message }}
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+        {% block dashboard_content %}{% endblock %}
+      </main>
+    </div>
+  </div>
+{% endblock %}
+
+{% block extra_js %}
+  <script src="{% static 'vendor/htmx.min.js' %}" defer></script>
+  <script src="{% static 'js/dashboard.js' %}" defer></script>
+  {% block dashboard_js %}{% endblock %}
+{% endblock %}

@@ -1,0 +1,23 @@
+{% load catalog_tags %}
+{% if records %}
+  <div class="overflow-x-auto rounded-xl border border-slate-100">
+    <table class="min-w-full text-sm">
+      <thead class="bg-slate-50 text-xs uppercase text-institutional-muted"><tr><th class="px-4 py-3 text-left">Código</th><th class="px-4 py-3 text-left">Razón social</th><th class="px-4 py-3 text-left">RUC</th><th class="px-4 py-3 text-left">Estado</th><th class="px-4 py-3 text-right">Acciones</th></tr></thead>
+      <tbody class="divide-y divide-slate-100">
+        {% for p in records %}
+          <tr>
+            <td class="px-4 py-3">{{ p.code }}</td>
+            <td class="px-4 py-3">{{ p.legal_name }}</td>
+            <td class="px-4 py-3">{{ p.ruc }}</td>
+            <td class="px-4 py-3">{% if p.is_active %}Activo{% else %}Inactivo{% endif %}</td>
+            <td class="px-4 py-3 text-right">
+              <a class="action-icon-btn" href="{% url 'catalogs:provider_detail' p.pk %}">Ver</a>
+              <a class="action-icon-btn" href="{% url 'catalogs:provider_edit' p.pk %}">Editar</a>
+              {% if p.is_active %}<a class="action-icon-btn text-red-700" href="{% url 'catalogs:provider_state' p.pk %}?action=deactivate">Desactivar</a>{% else %}<a class="action-icon-btn" href="{% url 'catalogs:provider_state' p.pk %}?action=activate">Reactivar</a>{% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% else %}<p class="text-sm text-institutional-muted">No hay proveedores registrados.</p>{% endif %}

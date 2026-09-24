@@ -1,0 +1,51 @@
+{% extends "administration/base_dashboard.html" %}
+{% load static %}
+{% block title %}Servicios de Internet{% endblock %}
+{% block header_search %}
+  <form method="get" action="{% url 'internet:service_list' %}" class="mx-auto hidden max-w-md sm:block">
+    <label class="sr-only" for="header-q">Buscar servicios</label>
+    <input id="header-q" type="search" name="q" value="{{ request.GET.q }}" placeholder="Buscar servicios..." class="w-full rounded-lg border border-slate-200 px-4 py-2 text-sm" />
+  </form>
+{% endblock %}
+{% block dashboard_content %}
+  <div class="space-y-6">
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+      <div>
+        <h1 class="text-2xl font-bold text-institutional-navy">Servicios de Internet</h1>
+        <p class="text-sm text-institutional-muted">Administra los servicios de Internet, su estado y vigencia.</p>
+      </div>
+      <a href="{% url 'internet:service_create' %}" class="btn-primary !w-auto px-5 py-2.5 text-sm">+ Nuevo servicio</a>
+    </div>
+    <div class="grid gap-4 sm:grid-cols-3">
+      <div class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100">
+        <p class="text-sm text-institutional-muted">Servicios activos</p>
+        <p class="mt-2 text-3xl font-bold text-emerald-600">{{ kpis.active }}</p>
+      </div>
+      <div class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100">
+        <p class="text-sm text-institutional-muted">Próximos a vencer</p>
+        <p class="mt-2 text-3xl font-bold text-amber-600">{{ kpis.expiring }}</p>
+      </div>
+      <div class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100">
+        <p class="text-sm text-institutional-muted">Con observaciones</p>
+        <p class="mt-2 text-3xl font-bold text-red-600">{{ kpis.observations }}</p>
+      </div>
+    </div>
+    <div class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100 sm:p-6">
+      <form method="get" class="grid gap-3 md:grid-cols-6" action="{% url 'internet:service_list' %}" hx-get="{% url 'internet:service_list' %}" hx-target="#service-table" hx-push-url="true">
+        <input type="search" name="q" value="{{ form.q.value|default:'' }}" placeholder="Código, sede, proveedor..." class="rounded-lg border px-3 py-2 text-sm md:col-span-2" />
+        <select name="site" class="rounded-lg border px-3 py-2 text-sm"><option value="">Sede</option>{% for s in form.fields.site.queryset %}<option value="{{ s.pk }}" {% if form.site.value|stringformat:'s' == s.pk|stringformat:'s' %}selected{% endif %}>{{ s.name }}</option>{% endfor %}</select>
+        <select name="provider" class="rounded-lg border px-3 py-2 text-sm"><option value="">Proveedor</option>{% for p in form.fields.provider.queryset %}<option value="{{ p.pk }}" {% if form.provider.value|stringformat:'s' == p.pk|stringformat:'s' %}selected{% endif %}>{{ p.legal_name }}</option>{% endfor %}</select>
+        <select name="status" class="rounded-lg border px-3 py-2 text-sm">{% for v,l in form.fields.status.choices %}<option value="{{ v }}" {% if form.status.value == v %}selected{% endif %}>{{ l }}</option>{% endfor %}</select>
+        <select name="ods" class="rounded-lg border px-3 py-2 text-sm"><option value="">ODS</option>{% for o in form.fields.ods.queryset %}<option value="{{ o.pk }}" {% if form.ods.value|stringformat:'s' == o.pk|stringformat:'s' %}selected{% endif %}>{{ o.code }}</option>{% endfor %}</select>
+        <select name="oes" class="rounded-lg border px-3 py-2 text-sm"><option value="">OES</option>{% for o in form.fields.oes.queryset %}<option value="{{ o.pk }}" {% if form.oes.value|stringformat:'s' == o.pk|stringformat:'s' %}selected{% endif %}>{{ o.code }}</option>{% endfor %}</select>
+        <select name="validity" class="rounded-lg border px-3 py-2 text-sm">{% for v,l in form.fields.validity.choices %}<option value="{{ v }}" {% if form.validity.value == v %}selected{% endif %}>{{ l }}</option>{% endfor %}</select>
+        <select name="order" class="rounded-lg border px-3 py-2 text-sm">{% for v,l in form.fields.order.choices %}<option value="{{ v }}" {% if form.order.value == v %}selected{% endif %}>{{ l }}</option>{% endfor %}</select>
+        <div class="flex gap-2 md:col-span-2">
+          <button type="submit" class="btn-primary !w-auto flex-1 py-2 text-sm">Buscar</button>
+          <a href="{% url 'internet:service_list' %}" class="inline-flex items-center justify-center rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-institutional-navy">Limpiar</a>
+        </div>
+      </form>
+      <div id="service-table" class="mt-6">{% include "internet/services/_table.html" %}</div>
+    </div>
+  </div>
+{% endblock %}

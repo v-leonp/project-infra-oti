@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply font-sans text-institutional-navy antialiased;
+  }
+}
+
+@layer components {
+  .login-input {
+    @apply block w-full rounded-lg border border-slate-200 bg-white py-3 pl-12 pr-12 text-base text-institutional-navy shadow-sm transition
+      placeholder:text-slate-400
+      focus:border-institutional-action focus:outline-none focus:ring-2 focus:ring-institutional-action/30;
+  }
+
+  .login-input--error {
+    @apply border-institutional-error focus:border-institutional-error focus:ring-institutional-error/25;
+  }
+
+  .btn-primary {
+    @apply inline-flex w-full items-center justify-center rounded-lg bg-institutional-action px-4 py-3 text-base font-semibold text-white shadow-sm transition
+      hover:bg-[#066d8a] focus:outline-none focus:ring-2 focus:ring-institutional-action focus:ring-offset-2
+      active:bg-[#055a73] disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  .auth-link {
+    @apply text-sm font-medium text-institutional-action underline-offset-2 transition hover:text-[#066d8a] hover:underline focus:outline-none focus:ring-2 focus:ring-institutional-action focus:ring-offset-2 rounded;
+  }
+
+  .dashboard-nav-link {
+    @apply block rounded-lg px-3 py-2.5 text-sm font-medium text-white/85 transition hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white/40;
+  }
+
+  .dashboard-nav-link.is-active {
+    @apply bg-white/15 text-white;
+  }
+
+  .action-icon-btn {
+    @apply inline-flex min-h-9 min-w-9 items-center justify-center rounded-md px-2 text-xs font-semibold text-institutional-action hover:bg-sky-50 focus:outline-none focus:ring-2 focus:ring-institutional-action/30;
+  }
+
+  .pagination-link {
+    @apply inline-flex min-h-9 min-w-9 items-center justify-center rounded-md border border-slate-200 px-2 text-sm text-institutional-navy hover:bg-slate-50;
+  }
+
+  .pagination-link.is-active {
+    @apply border-institutional-action bg-institutional-action text-white;
+  }
+
+  .tab-btn {
+    @apply border-b-2 border-transparent px-1 py-3 text-sm font-semibold text-institutional-muted hover:text-institutional-navy focus:outline-none focus:ring-2 focus:ring-institutional-action/30;
+  }
+
+  .tab-btn.is-active {
+    @apply border-institutional-action text-institutional-action;
+  }
+}

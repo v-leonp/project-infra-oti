@@ -1,0 +1,30 @@
+{% extends "administration/base_dashboard.html" %}
+
+{% block title %}{% if is_create %}Nuevo{% else %}Editar{% endif %} {{ config.label }} | Catálogos{% endblock %}
+
+{% block dashboard_content %}
+  <div class="mx-auto max-w-3xl rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-100">
+    <h1 class="text-xl font-bold text-institutional-navy">{% if is_create %}Nuevo registro{% else %}Editar registro{% endif %} — {{ config.label }}</h1>
+    <form method="post" class="mt-6 space-y-4" novalidate>
+      {% csrf_token %}
+      {% if form.non_field_errors %}
+        <div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800" role="alert">{{ form.non_field_errors }}</div>
+      {% endif %}
+      {% for field in form %}
+        <div>
+          {% if field.field.widget.input_type != 'checkbox' %}
+            <label for="{{ field.id_for_label }}" class="mb-1 block text-sm font-semibold">{{ field.label }}{% if field.field.required %}<span class="text-red-600"> *</span>{% endif %}</label>
+            {{ field }}
+          {% else %}
+            <label class="inline-flex items-center gap-2 text-sm">{{ field }} <span>{{ field.label }}</span></label>
+          {% endif %}
+          {% if field.errors %}<p class="mt-1 text-sm text-red-700" role="alert">{{ field.errors.0 }}</p>{% endif %}
+        </div>
+      {% endfor %}
+      <div class="flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:justify-end">
+        <a href="{{ cancel_url }}" class="rounded-lg border border-slate-200 px-4 py-2.5 text-center text-sm">Cancelar</a>
+        <button type="submit" class="btn-primary !w-auto px-6 py-2.5 text-sm">Guardar</button>
+      </div>
+    </form>
+  </div>
+{% endblock %}

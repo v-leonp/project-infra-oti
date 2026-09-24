@@ -1,0 +1,62 @@
+{% load internet_tags %}
+{% if records %}
+  <p class="mb-3 text-sm text-institutional-muted">Mostrando {{ records|length }} de {{ total_count }} servicios</p>
+  <div class="overflow-x-auto">
+    <table class="min-w-full text-left text-sm">
+      <thead class="border-b bg-slate-50 text-institutional-muted">
+        <tr>
+          <th class="px-3 py-3" scope="col">Código</th>
+          <th class="px-3 py-3" scope="col">ODS/OES</th>
+          <th class="px-3 py-3" scope="col">Sede</th>
+          <th class="px-3 py-3" scope="col">Proveedor</th>
+          <th class="px-3 py-3" scope="col">Enlace</th>
+          <th class="px-3 py-3" scope="col">Velocidad</th>
+          <th class="px-3 py-3" scope="col">Vigencia</th>
+          <th class="px-3 py-3" scope="col">Estado</th>
+          <th class="px-3 py-3" scope="col">Acciones</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y">
+        {% for row in records %}
+          <tr>
+            <td class="px-3 py-3 font-semibold">{{ row.code }}</td>
+            <td class="px-3 py-3">{{ row.ods_oes_label }}</td>
+            <td class="px-3 py-3">{{ row.site.name }}</td>
+            <td class="px-3 py-3">{{ row.provider.legal_name }}</td>
+            <td class="px-3 py-3">{{ row.get_link_type_display }}</td>
+            <td class="px-3 py-3">{{ row.contracted_speed }} {{ row.speed_unit }}</td>
+            <td class="px-3 py-3">{{ row.end_date|date:"d/m/Y" }}</td>
+            <td class="px-3 py-3">
+              <span class="inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold ring-1 {{ row.display_status|service_status_badge }}">
+                {{ row.display_status|service_status_label }}
+              </span>
+            </td>
+            <td class="px-3 py-3">
+              <div class="flex flex-wrap gap-1">
+                <a href="{% url 'internet:service_detail' row.pk %}" class="action-icon-btn" title="Ver ficha">Ver</a>
+                <a href="{% url 'internet:service_edit' row.pk %}" class="action-icon-btn" title="Editar">Editar</a>
+                <a href="{% url 'internet:service_state' row.pk %}" class="action-icon-btn" title="Cambiar estado">Estado</a>
+                <a href="{% url 'internet:contract_list' %}?service={{ row.pk }}" class="action-icon-btn" title="Relacionados">Rel.</a>
+              </div>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% if page_obj.has_other_pages %}
+    <nav class="mt-4 flex flex-wrap items-center gap-2" aria-label="Paginación">
+      {% if page_obj.has_previous %}
+        <a class="pagination-link" href="?page={{ page_obj.previous_page_number }}">‹</a>
+      {% endif %}
+      {% for num in page_obj.paginator.page_range %}
+        <a class="pagination-link {% if page_obj.number == num %}is-active{% endif %}" href="?page={{ num }}">{{ num }}</a>
+      {% endfor %}
+      {% if page_obj.has_next %}
+        <a class="pagination-link" href="?page={{ page_obj.next_page_number }}">›</a>
+      {% endif %}
+    </nav>
+  {% endif %}
+{% else %}
+  <p class="rounded-lg border border-dashed border-slate-200 px-4 py-8 text-center text-sm text-institutional-muted">No hay servicios registrados con los filtros aplicados.</p>
+{% endif %}

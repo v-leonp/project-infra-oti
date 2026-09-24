@@ -1,0 +1,35 @@
+{% extends "administration/base_dashboard.html" %}
+{% load administration_tags %}
+
+{% block title %}Detalle de usuario | Infraestructura - OTI{% endblock %}
+
+{% block dashboard_content %}
+  <div class="mx-auto max-w-3xl rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-100">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <h1 class="text-xl font-bold text-institutional-navy">{{ profile_user.get_full_name|default:profile_user.username }}</h1>
+        <p class="text-sm text-institutional-muted">@{{ profile_user.username }}</p>
+      </div>
+      <a href="{% url 'administration:user_edit' profile_user.pk %}" class="btn-primary !w-auto px-4 py-2 text-sm">Editar</a>
+    </div>
+    <dl class="mt-6 grid gap-4 sm:grid-cols-2">
+      <div>
+        <dt class="text-xs font-semibold uppercase text-institutional-muted">Correo</dt>
+        <dd class="mt-1 text-sm">{{ profile_user.email }}</dd>
+      </div>
+      <div>
+        <dt class="text-xs font-semibold uppercase text-institutional-muted">Rol</dt>
+        <dd class="mt-1 text-sm">{{ role_name|default:"—" }}</dd>
+      </div>
+      <div>
+        <dt class="text-xs font-semibold uppercase text-institutional-muted">Estado</dt>
+        <dd class="mt-1 text-sm">{% if profile_user.is_active %}Activo{% else %}Inactivo{% endif %}</dd>
+      </div>
+      <div>
+        <dt class="text-xs font-semibold uppercase text-institutional-muted">Último acceso</dt>
+        <dd class="mt-1 text-sm">{% if profile_user.last_login %}{{ profile_user.last_login|date:"d/m/Y H:i" }}{% else %}—{% endif %}</dd>
+      </div>
+    </dl>
+    <a href="{% url 'administration:user_list' %}" class="mt-8 inline-block text-sm font-medium text-institutional-action hover:underline">← Volver al listado</a>
+  </div>
+{% endblock %}

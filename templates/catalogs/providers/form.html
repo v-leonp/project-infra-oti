@@ -1,0 +1,28 @@
+{% extends "administration/base_dashboard.html" %}
+
+{% block title %}Registro de proveedor | Catálogos{% endblock %}
+
+{% block dashboard_content %}
+  <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-100">
+    <h1 class="text-xl font-bold text-institutional-navy">Registro de proveedor</h1>
+    <p class="text-sm text-institutional-muted">Registra la información del proveedor.</p>
+    <form method="post" class="mt-6 grid gap-4 lg:grid-cols-2" novalidate>
+      {% csrf_token %}
+      {% for field in form %}
+        <div class="{% if field.name == 'address' %}lg:col-span-2{% endif %}">
+          <label for="{{ field.id_for_label }}" class="mb-1 block text-sm font-semibold">{{ field.label }}{% if field.field.required %}<span class="text-red-600"> *</span>{% endif %}</label>
+          {% if field.field.widget.input_type == 'checkbox' %}
+            <label class="inline-flex items-center gap-2 text-sm">{{ field }} <span>{{ field.label }}</span></label>
+          {% else %}
+            {{ field }}
+          {% endif %}
+          {% if field.errors %}<p class="mt-1 text-sm text-red-700" role="alert">{{ field.errors.0 }}</p>{% endif %}
+        </div>
+      {% endfor %}
+      <div class="lg:col-span-2 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+        <a href="{% url 'catalogs:provider_list' %}" class="rounded-lg border border-slate-200 px-4 py-2.5 text-center text-sm">Cancelar</a>
+        <button type="submit" class="btn-primary !w-auto px-6 py-2.5 text-sm">Guardar proveedor</button>
+      </div>
+    </form>
+  </div>
+{% endblock %}

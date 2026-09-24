@@ -1,0 +1,26 @@
+{% if is_system_administrator %}
+  <div class="px-1">
+    <button
+      type="button"
+      id="catalogs-menu-toggle"
+      class="dashboard-nav-link flex w-full items-center justify-between"
+      aria-expanded="{% if request.resolver_match.namespace == 'catalogs' %}true{% else %}false{% endif %}"
+      aria-controls="catalogs-submenu"
+    >
+      <span>Catálogos</span>
+      <span aria-hidden="true">▾</span>
+    </button>
+    <div
+      id="catalogs-submenu"
+      class="mt-1 space-y-1 pl-3 {% if request.resolver_match.namespace != 'catalogs' %}hidden{% endif %}"
+    >
+      <a href="{% url 'catalogs:ods_oes_list' %}" class="dashboard-nav-link text-sm {% if request.resolver_match.url_name == 'ods_oes_list' %}is-active{% endif %}">ODS / OES</a>
+      <a href="{% url 'catalogs:sedes_list' %}" class="dashboard-nav-link text-sm {% if 'sedes' in request.resolver_match.url_name %}is-active{% endif %}">Sedes</a>
+      <a href="{% url 'catalogs:provider_list' %}" class="dashboard-nav-link text-sm {% if 'provider' in request.resolver_match.url_name %}is-active{% endif %}">Proveedores</a>
+      <a href="{% url 'catalogs:estados_list' %}" class="dashboard-nav-link text-sm {% if 'estados' in request.resolver_match.url_name %}is-active{% endif %}">Estados</a>
+      <a href="{% url 'catalogs:tipos_servicio_list' %}" class="dashboard-nav-link text-sm {% if 'tipos_servicio' in request.resolver_match.url_name %}is-active{% endif %}">Tipos de servicio</a>
+      <a href="{% url 'catalogs:responsables_list' %}" class="dashboard-nav-link text-sm {% if 'responsables' in request.resolver_match.url_name %}is-active{% endif %}">Responsables</a>
+      <a href="{% url 'catalogs:tipos_documentales_list' %}" class="dashboard-nav-link text-sm {% if 'tipos_documentales' in request.resolver_match.url_name %}is-active{% endif %}">Tipos documentales</a>
+    </div>
+  </div>
+{% endif %}

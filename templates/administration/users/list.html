@@ -1,0 +1,65 @@
+{% extends "administration/base_dashboard.html" %}
+
+{% block title %}Gestión de usuarios | Infraestructura - OTI{% endblock %}
+
+{% block dashboard_content %}
+  <div class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100 sm:p-6">
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+      <div>
+        <h1 class="text-xl font-bold text-institutional-navy sm:text-2xl">Gestión de usuarios</h1>
+        <p class="mt-1 text-sm text-institutional-muted">
+          Administra los usuarios del sistema, sus roles y estado de cuenta.
+        </p>
+      </div>
+      <a href="{% url 'administration:user_create' %}" class="btn-primary !w-auto whitespace-nowrap px-5 py-2.5 text-sm">
+        + Nuevo usuario
+      </a>
+    </div>
+
+    <form
+      method="get"
+      class="mt-6 grid gap-3 sm:grid-cols-4"
+      hx-get="{% url 'administration:user_list' %}"
+      hx-target="#user-table"
+      hx-trigger="keyup changed delay:350ms from:#id_q, change from:#id_role, change from:#id_status"
+      hx-push-url="true"
+    >
+      <div class="sm:col-span-4">
+        <label class="sr-only" for="id_q">Buscar usuarios</label>
+        <input
+          type="search"
+          name="q"
+          id="id_q"
+          value="{{ form.q.value|default:'' }}"
+          placeholder="Buscar usuarios..."
+          class="w-full rounded-lg border border-slate-200 py-2.5 pl-3 text-sm focus:border-institutional-action focus:outline-none focus:ring-2 focus:ring-institutional-action/20"
+        />
+      </div>
+      <div>
+        <label for="id_role" class="mb-1 block text-xs font-semibold uppercase tracking-wide text-institutional-muted">Rol</label>
+        <select name="role" id="id_role" class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm">
+          {% for value, label in form.fields.role.choices %}
+            <option value="{{ value }}" {% if form.role.value == value %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label for="id_status" class="mb-1 block text-xs font-semibold uppercase tracking-wide text-institutional-muted">Estado</label>
+        <select name="status" id="id_status" class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm">
+          {% for value, label in form.fields.status.choices %}
+            <option value="{{ value }}" {% if form.status.value == value %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="flex items-end">
+        <button type="submit" class="w-full rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-institutional-navy hover:bg-slate-50">
+          Aplicar filtros
+        </button>
+      </div>
+    </form>
+
+    <div id="user-table" class="mt-6">
+      {% include "administration/users/_table.html" %}
+    </div>
+  </div>
+{% endblock %}

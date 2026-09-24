@@ -1,0 +1,58 @@
+{% extends "administration/base_dashboard.html" %}
+
+{% block title %}Editar usuario | Infraestructura - OTI{% endblock %}
+
+{% block dashboard_content %}
+  <div class="grid gap-6 lg:grid-cols-2">
+    <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-100">
+      <h1 class="text-xl font-bold text-institutional-navy">Editar usuario</h1>
+      <p class="mt-1 text-sm text-institutional-muted">{{ profile_user.username }}</p>
+      <form method="post" class="mt-6 space-y-4" novalidate>
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+          <div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800" role="alert">
+            {{ form.non_field_errors }}
+          </div>
+        {% endif %}
+        {% for field in form %}
+          <div>
+            {% if field.field.widget.input_type != 'checkbox' %}
+              <label for="{{ field.id_for_label }}" class="mb-1 block text-sm font-semibold text-institutional-navy">{{ field.label }}</label>
+              {{ field }}
+            {% else %}
+              <label class="inline-flex items-center gap-2 text-sm">
+                {{ field }}
+                <span>{{ field.label }}</span>
+              </label>
+            {% endif %}
+            {% if field.errors %}
+              <p class="mt-1 text-sm text-institutional-error" role="alert">{{ field.errors.0 }}</p>
+            {% endif %}
+          </div>
+        {% endfor %}
+        <button type="submit" class="btn-primary !w-auto px-6 py-2.5 text-sm">Guardar cambios</button>
+      </form>
+    </div>
+
+    <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-100">
+      <h2 class="text-lg font-semibold text-institutional-navy">Cambiar contraseña</h2>
+      <p class="mt-1 text-sm text-institutional-muted">Establezca una nueva contraseña sin visualizar la actual.</p>
+      <form method="post" class="mt-6 space-y-4">
+        {% csrf_token %}
+        <input type="hidden" name="change_password" value="1" />
+        {% for field in password_form %}
+          <div>
+            <label for="{{ field.id_for_label }}" class="mb-1 block text-sm font-semibold text-institutional-navy">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}
+              <p class="mt-1 text-sm text-institutional-error" role="alert">{{ field.errors.0 }}</p>
+            {% endif %}
+          </div>
+        {% endfor %}
+        <button type="submit" class="rounded-lg border border-institutional-action px-4 py-2.5 text-sm font-semibold text-institutional-action hover:bg-sky-50">
+          Actualizar contraseña
+        </button>
+      </form>
+    </div>
+  </div>
+{% endblock %}

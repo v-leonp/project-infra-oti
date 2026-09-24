@@ -1,0 +1,132 @@
+{% extends "administration/base_dashboard.html" %}
+{% load administration_tags %}
+
+{% block title %}Grupos y permisos | Infraestructura - OTI{% endblock %}
+
+{% block dashboard_content %}
+  <div class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100 sm:p-6">
+    <h1 class="text-xl font-bold text-institutional-navy sm:text-2xl">Grupos y permisos</h1>
+    <p class="mt-1 text-sm text-institutional-muted">Define los permisos asociados al grupo.</p>
+
+    <form method="post" class="mt-6">
+      {% csrf_token %}
+      <input type="hidden" name="active_tab" id="active_tab" value="{{ active_tab }}" />
+
+      <div class="grid gap-4 lg:grid-cols-2">
+        <div>
+          <label for="id_group" class="mb-1 block text-sm font-semibold text-institutional-navy">Nombre del grupo</label>
+          <select
+            name="group"
+            id="id_group"
+            class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm"
+            onchange="window.location='?group='+this.value"
+          >
+            {% for g in groups %}
+              <option value="{{ g.pk }}" {% if g.pk == group.pk %}selected{% endif %}>{{ g.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div>
+          <label for="id_description" class="mb-1 block text-sm font-semibold text-institutional-navy">Descripción</label>
+          <textarea name="description" id="id_description" rows="2" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm">{{ form.description.value|default:'' }}</textarea>
+        </div>
+      </div>
+
+      <div class="mt-6 border-b border-slate-200">
+        <nav class="-mb-px flex gap-6" aria-label="Secciones del grupo">
+          <button
+            type="button"
+            class="tab-btn {% if active_tab != 'members' %}is-active{% endif %}"
+            data-tab="permissions"
+          >
+            Permisos del sistema
+          </button>
+          <button
+            type="button"
+            class="tab-btn {% if active_tab == 'members' %}is-active{% endif %}"
+            data-tab="members"
+          >
+            Usuarios en el grupo
+          </button>
+        </nav>
+      </div>
+
+      <div id="tab-permissions" class="mt-6 {% if active_tab == 'members' %}hidden{% endif %}">
+        <div class="overflow-x-auto rounded-xl border border-slate-100">
+          <table class="min-w-full text-sm">
+            <thead class="bg-slate-50 text-xs font-semibold uppercase text-institutional-muted">
+              <tr>
+                <th class="px-4 py-3 text-left" scope="col">Módulo / Funcionalidad</th>
+                <th class="px-3 py-3 text-center" scope="col">Ver</th>
+                <th class="px-3 py-3 text-center" scope="col">Crear</th>
+                <th class="px-3 py-3 text-center" scope="col">Editar</th>
+                <th class="px-3 py-3 text-center" scope="col">Cambiar estado</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              {% regroup matrix_rows by module_code as module_groups %}
+              {% for module_group in module_groups %}
+                <tr>
+                  <td class="px-4 py-3 font-medium text-institutional-navy">{{ module_group.list.0.module_label }}</td>
+                  {% for row in module_group.list %}
+                    <td class="px-3 py-3 text-center">
+                      <input
+                        type="checkbox"
+                        name="permissions"
+                        value="{{ row.codename }}"
+                        {% if row.checked %}checked{% endif %}
+                        class="h-4 w-4 rounded border-slate-300 text-institutional-action focus:ring-institutional-action"
+                        aria-label="{{ row.module_label }} — {{ row.action }}"
+                      />
+                    </td>
+                  {% endfor %}
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% if group.name == 'Usuario' %}
+          <p class="mt-3 text-xs text-institutional-muted">
+            El grupo Usuario no puede recibir permisos de administración (usuarios, grupos, auditoría).
+          </p>
+        {% endif %}
+      </div>
+
+      <div id="tab-members" class="mt-6 {% if active_tab != 'members' %}hidden{% endif %}">
+        <ul class="divide-y divide-slate-100 rounded-xl border border-slate-100">
+          {% for member in members %}
+            <li class="flex items-center justify-between px-4 py-3 text-sm">
+              <span class="font-medium text-institutional-navy">{{ member.get_full_name|default:member.username }}</span>
+              <span class="text-institutional-muted">{{ member.email }}</span>
+            </li>
+          {% empty %}
+            <li class="px-4 py-6 text-center text-sm text-institutional-muted">No hay usuarios en este grupo.</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      {% if form.non_field_errors %}
+        <p class="mt-4 text-sm text-institutional-error" role="alert">{{ form.non_field_errors.0 }}</p>
+      {% endif %}
+
+      <div class="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+        <a href="{% url 'administration:group_permissions' %}?group={{ group.pk }}" class="rounded-lg border border-slate-200 px-4 py-2.5 text-center text-sm font-medium">Cancelar</a>
+        <button type="submit" class="btn-primary !w-auto px-6 py-2.5 text-sm">Guardar cambios</button>
+      </div>
+    </form>
+  </div>
+{% endblock %}
+
+{% block dashboard_js %}
+  <script>
+    document.querySelectorAll(".tab-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const tab = btn.dataset.tab;
+        document.getElementById("active_tab").value = tab;
+        document.getElementById("tab-permissions").classList.toggle("hidden", tab !== "permissions");
+        document.getElementById("tab-members").classList.toggle("hidden", tab !== "members");
+        document.querySelectorAll(".tab-btn").forEach((b) => b.classList.toggle("is-active", b === btn));
+      });
+    });
+  </script>
+{% endblock %}

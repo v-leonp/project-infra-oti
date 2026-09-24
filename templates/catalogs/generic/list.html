@@ -1,0 +1,33 @@
+{% extends "administration/base_dashboard.html" %}
+
+{% block title %}{{ config.title }} | Catálogos{% endblock %}
+
+{% block dashboard_content %}
+  <div class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100 sm:p-6">
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+      <div>
+        <h1 class="text-xl font-bold text-institutional-navy sm:text-2xl">{{ config.title }}</h1>
+        <p class="mt-1 text-sm text-institutional-muted">Administre los registros del catálogo.</p>
+      </div>
+      <a href="{{ create_url }}" class="btn-primary !w-auto px-5 py-2.5 text-sm">+ Nuevo registro</a>
+    </div>
+
+    <form method="get" class="mt-6 grid gap-3 sm:grid-cols-4" hx-get="{{ list_url }}" hx-target="#catalog-table" hx-push-url="true">
+      <div class="sm:col-span-2">
+        <label class="sr-only" for="id_q">Buscar</label>
+        <input type="search" name="q" id="id_q" value="{{ form.q.value|default:'' }}" placeholder="Buscar..." class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm" />
+      </div>
+      <div>
+        <label for="id_status" class="mb-1 block text-xs font-semibold uppercase text-institutional-muted">Estado</label>
+        <select name="status" id="id_status" class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm">
+          {% for value, label in form.fields.status.choices %}
+            <option value="{{ value }}" {% if form.status.value == value %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="flex items-end"><button type="submit" class="w-full rounded-lg border border-slate-200 px-4 py-2 text-sm">Aplicar</button></div>
+    </form>
+
+    <div id="catalog-table" class="mt-6">{% include "catalogs/generic/_table.html" %}</div>
+  </div>
+{% endblock %}

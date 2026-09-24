@@ -1,0 +1,9 @@
+{% extends "administration/base_dashboard.html" %}
+{% block title %}Documentos{% endblock %}
+{% block dashboard_content %}
+  <div class="grid gap-6 lg:grid-cols-2">
+    <div class="rounded-2xl bg-white p-6 shadow-sm"><h2 class="font-bold">Cargar documento</h2><form method="post" enctype="multipart/form-data" class="mt-4">{% csrf_token %}{{ form.as_p }}<button class="btn-primary !w-auto px-4 py-2 text-sm mt-2">Cargar</button></form></div>
+    <div class="rounded-2xl bg-white p-6 shadow-sm"><h2 class="font-bold">Registros</h2>
+    <ul class="mt-4 space-y-2 text-sm">{% for d in records %}<li class="flex justify-between border-b py-2"><span>{{ d.name }}</span><a href="{% url 'internet:document_download' d.pk %}">Descargar</a></li>{% empty %}<li>Sin documentos</li>{% endfor %}</ul></div>
+  </div>
+{% endblock %}

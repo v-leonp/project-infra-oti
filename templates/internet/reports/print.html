@@ -1,0 +1,7 @@
+<!DOCTYPE html>
+<html lang="es">
+<head><meta charset="utf-8"><title>Reporte</title><style>body{font-family:sans-serif;padding:2rem}table{width:100%;border-collapse:collapse}th,td{border:1px solid #ccc;padding:6px;font-size:12px}</style></head>
+<body><h1>Reporte — {{ report_type }}</h1>
+{% if report_type == 'incidents' %}{% for r in results %}<p>{{ r.ticket_code }} — {{ r.service.code }}</p>{% endfor %}
+{% else %}{% for r in results %}<p>{{ r.code|default:r.name }} — {{ r.site.name|default:"" }}</p>{% endfor %}{% endif %}
+</body></html>

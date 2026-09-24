@@ -1,0 +1,24 @@
+{% extends "administration/base_dashboard.html" %}
+
+{% block title %}Inicio | Infraestructura - OTI{% endblock %}
+
+{% block dashboard_content %}
+  <div class="mx-auto max-w-3xl rounded-2xl bg-white p-8 shadow-sm ring-1 ring-slate-100">
+    <h1 class="text-2xl font-bold text-institutional-navy">Infraestructura - OTI</h1>
+    <p class="mt-2 text-institutional-muted">
+      Bienvenido, <span class="font-semibold text-institutional-navy">{{ user.get_username }}</span>.
+    </p>
+    <p class="mt-4 rounded-lg bg-emerald-50 px-4 py-3 text-sm text-emerald-900" role="status">
+      Acceso exitoso al sistema.
+      {% if is_system_administrator %}
+        Utilice el menú lateral para gestionar usuarios, grupos y auditoría.
+      {% elif is_internet_module_user %}
+        Utilice el menú <strong>Internet</strong> para gestionar servicios, contratos, entregables e incidencias.
+      {% endif %}
+    </p>
+    <form method="post" action="{% url 'accounts:logout' %}" class="mt-8">
+      {% csrf_token %}
+      <button type="submit" class="btn-primary max-w-xs">Cerrar sesión</button>
+    </form>
+  </div>
+{% endblock %}

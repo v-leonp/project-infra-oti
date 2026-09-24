@@ -1,0 +1,27 @@
+{% extends "administration/base_dashboard.html" %}
+{% load internet_tags %}
+{% block title %}Reportes{% endblock %}
+{% block dashboard_content %}
+  <div class="rounded-2xl bg-white p-6 shadow-sm">
+    <h1 class="text-xl font-bold">Reportes</h1>
+    <form method="get" class="mt-4 grid gap-3 md:grid-cols-3">{{ form.as_p }}
+      <div class="flex flex-wrap gap-2 md:col-span-3">
+        <button type="submit" class="btn-primary !w-auto px-4 py-2 text-sm">Consultar</button>
+        <button type="submit" name="export" value="csv" class="rounded-lg border px-4 py-2 text-sm font-semibold">Exportar CSV</button>
+        <a href="?{{ request.GET.urlencode }}&print=1" class="rounded-lg border px-4 py-2 text-sm font-semibold">Imprimir</a>
+      </div>
+    </form>
+    <div class="mt-6 overflow-x-auto">
+      {% if report_type == 'incidents' %}
+        <table class="w-full text-sm"><thead><tr class="border-b"><th class="p-2">Ticket</th><th class="p-2">Servicio</th><th class="p-2">Estado</th></tr></thead>
+        <tbody>{% for r in results %}<tr class="border-b"><td class="p-2">{{ r.ticket_code }}</td><td class="p-2">{{ r.service.code }}</td><td class="p-2">{{ r.status }}</td></tr>{% endfor %}</tbody></table>
+      {% elif report_type == 'deliverables' %}
+        <table class="w-full text-sm"><thead><tr class="border-b"><th class="p-2">Servicio</th><th class="p-2">Nombre</th><th class="p-2">Estado</th></tr></thead>
+        <tbody>{% for r in results %}<tr class="border-b"><td class="p-2">{{ r.service.code }}</td><td class="p-2">{{ r.name }}</td><td class="p-2">{{ r.status }}</td></tr>{% endfor %}</tbody></table>
+      {% else %}
+        <table class="w-full text-sm"><thead><tr class="border-b"><th class="p-2">Código</th><th class="p-2">Sede</th><th class="p-2">Estado</th></tr></thead>
+        <tbody>{% for r in results %}<tr class="border-b"><td class="p-2">{{ r.code }}</td><td class="p-2">{{ r.site.name }}</td><td class="p-2">{{ r.display_status|service_status_label }}</td></tr>{% endfor %}</tbody></table>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

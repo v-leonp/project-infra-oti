@@ -1,0 +1,152 @@
+{% extends "accounts/_auth_layout.html" %}
+{% load static %}
+
+{% block title %}Iniciar sesión | Infraestructura - OTI{% endblock %}
+
+{% block auth_content %}
+  <div class="mx-auto max-w-md">
+    <header class="mb-8 lg:hidden">
+      <p class="text-2xl font-bold text-institutional-navy" role="presentation">Infraestructura - OTI</p>
+      <p class="mt-1 text-sm text-institutional-muted">
+        Gestión interna de servicios y activos tecnológicos
+      </p>
+    </header>
+
+    <div class="mb-8 hidden lg:block">
+      <h2 class="text-xl font-semibold text-institutional-navy">Iniciar sesión</h2>
+      <p class="mt-1 text-sm text-institutional-muted">Ingrese sus credenciales institucionales</p>
+    </div>
+
+    {% if form.non_field_errors %}
+      <div
+        id="login-errors"
+        class="mb-6 rounded-lg border border-institutional-error/30 bg-red-50 px-4 py-3 text-sm text-institutional-error"
+        role="alert"
+        tabindex="-1"
+      >
+        {% for error in form.non_field_errors %}
+          <p>{{ error }}</p>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <form method="post" action="{% url 'accounts:login' %}" novalidate>
+      {% csrf_token %}
+      {% if next %}
+        <input type="hidden" name="next" value="{{ next }}" />
+      {% endif %}
+
+      <div class="space-y-5">
+        <div>
+          <label for="id_username" class="mb-2 block text-sm font-semibold text-institutional-navy">
+            Usuario
+          </label>
+          <div class="relative">
+            <span
+              class="pointer-events-none absolute inset-y-0 left-0 flex w-11 items-center justify-center text-institutional-muted"
+              aria-hidden="true"
+            >
+              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a8.25 8.25 0 1115 0"
+                />
+              </svg>
+            </span>
+            <input
+              type="text"
+              name="username"
+              id="id_username"
+              value="{{ form.username.value|default:'' }}"
+              autocomplete="username"
+              required
+              class="login-input {% if form.username.errors %}login-input--error{% endif %}"
+              aria-invalid="{% if form.username.errors %}true{% else %}false{% endif %}"
+              {% if form.username.errors %}aria-describedby="username-error"{% endif %}
+            />
+          </div>
+          {% if form.username.errors %}
+            <p id="username-error" class="mt-2 text-sm text-institutional-error" role="alert">
+              {{ form.username.errors.0 }}
+            </p>
+          {% endif %}
+        </div>
+
+        <div>
+          <label for="id_password" class="mb-2 block text-sm font-semibold text-institutional-navy">
+            Contraseña
+          </label>
+          <div class="relative">
+            <span
+              class="pointer-events-none absolute inset-y-0 left-0 flex w-11 items-center justify-center text-institutional-muted"
+              aria-hidden="true"
+            >
+              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M16.5 10.5V7.875a4.875 4.875 0 10-9.75 0V10.5m11.25 0H4.875A1.125 1.125 0 003.75 11.625v7.125A1.125 1.125 0 004.875 20.25h14.25A1.125 1.125 0 0020.25 19.125v-7.125A1.125 1.125 0 0019.125 10.5z"
+                />
+              </svg>
+            </span>
+            <input
+              type="password"
+              name="password"
+              id="id_password"
+              autocomplete="current-password"
+              required
+              class="login-input {% if form.password.errors %}login-input--error{% endif %}"
+              aria-invalid="{% if form.password.errors %}true{% else %}false{% endif %}"
+              {% if form.password.errors %}aria-describedby="password-error"{% elif form.non_field_errors %}aria-describedby="login-errors"{% endif %}
+            />
+            <button
+              type="button"
+              id="toggle-password"
+              class="absolute inset-y-0 right-0 flex min-h-[44px] min-w-[44px] items-center justify-center rounded-r-lg text-institutional-muted transition hover:text-institutional-navy focus:outline-none focus:ring-2 focus:ring-inset focus:ring-institutional-action"
+              aria-label="Mostrar contraseña"
+              aria-pressed="false"
+            >
+              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M2.036 12.322a1 2 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.01 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.01-9.963-7.178z"
+                />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            </button>
+          </div>
+          {% if form.password.errors %}
+            <p id="password-error" class="mt-2 text-sm text-institutional-error" role="alert">
+              {{ form.password.errors.0 }}
+            </p>
+          {% endif %}
+        </div>
+
+        <button type="submit" class="btn-primary">Ingresar</button>
+      </div>
+    </form>
+
+    <p class="mt-6 text-center">
+      <a class="auth-link" href="{% url 'accounts:password_reset' %}">¿Olvidaste tu contraseña?</a>
+    </p>
+
+    <div class="mt-8 border-t border-slate-200 pt-6">
+      <p class="flex items-center justify-center gap-2 text-center text-xs text-institutional-muted">
+        <svg class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M16.5 10.5V7.875a4.875 4.875 0 10-9.75 0V10.5m11.25 0H4.875A1.125 1.125 0 003.75 11.625v7.125A1.125 1.125 0 004.875 20.25h14.25A1.125 1.125 0 0020.25 19.125v-7.125A1.125 1.125 0 0019.125 10.5z"
+          />
+        </svg>
+        Acceso exclusivo para personal autorizado
+      </p>
+    </div>
+  </div>
+{% endblock %}
+
+{% block extra_js %}
+  <script src="{% static 'js/login.js' %}" defer></script>
+{% endblock %}

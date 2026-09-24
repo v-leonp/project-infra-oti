@@ -1,0 +1,30 @@
+{% extends "administration/base_dashboard.html" %}
+
+{% block title %}ODS / OES | Catálogos{% endblock %}
+
+{% block dashboard_content %}
+  <div class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100 sm:p-6">
+    <h1 class="text-xl font-bold text-institutional-navy sm:text-2xl">ODS / OES</h1>
+    <p class="mt-1 text-sm text-institutional-muted">Gestione los catálogos de objetivos de desarrollo y estratégicos del sector.</p>
+
+    <div class="mt-6 border-b border-slate-200" role="tablist" aria-label="Catálogo ODS u OES">
+      <a href="?tab=ods" role="tab" aria-selected="{% if tab == 'ods' %}true{% else %}false{% endif %}" class="tab-btn {% if tab == 'ods' %}is-active{% endif %} mr-6 inline-block">ODS</a>
+      <a href="?tab=oes" role="tab" aria-selected="{% if tab == 'oes' %}true{% else %}false{% endif %}" class="tab-btn {% if tab == 'oes' %}is-active{% endif %} inline-block">OES</a>
+    </div>
+
+    <div class="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <form method="get" class="grid flex-1 gap-3 sm:grid-cols-3" hx-get="{{ list_url }}" hx-target="#catalog-table" hx-push-url="true">
+        <input type="hidden" name="tab" value="{{ tab }}" />
+        <input type="search" name="q" value="{{ form.q.value|default:'' }}" placeholder="Buscar por código, nombre o descripción..." class="rounded-lg border border-slate-200 px-3 py-2.5 text-sm sm:col-span-2" />
+        <select name="status" class="rounded-lg border border-slate-200 px-3 py-2 text-sm">
+          {% for value, label in form.fields.status.choices %}
+            <option value="{{ value }}" {% if form.status.value == value %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </form>
+      <a href="{{ create_url }}" class="btn-primary !w-auto px-5 py-2.5 text-sm">+ Nuevo registro</a>
+    </div>
+
+    <div id="catalog-table" class="mt-6">{% include "catalogs/ods_oes/_table.html" %}</div>
+  </div>
+{% endblock %}

@@ -1,0 +1,7 @@
+{% extends "administration/base_dashboard.html" %}
+{% block title %}Incidencias{% endblock %}
+{% block dashboard_content %}
+  <div class="rounded-2xl bg-white p-6 shadow-sm"><div class="flex justify-between"><h1 class="text-xl font-bold">Incidencias</h1><a href="{% url 'internet:incident_create' %}" class="btn-primary !w-auto px-4 py-2 text-sm">+ Nueva</a></div>
+  <table class="mt-4 w-full text-sm"><thead><tr class="border-b"><th class="p-2">Ticket</th><th class="p-2">Servicio</th><th class="p-2">Inicio</th><th class="p-2">Duración</th><th></th></tr></thead>
+  <tbody>{% for r in records %}<tr class="border-b"><td class="p-2">{{ r.ticket_code }}</td><td class="p-2">{{ r.service.code }}</td><td class="p-2">{{ r.started_at|date:"d/m/Y H:i" }}</td><td class="p-2">{{ r.downtime_minutes|default:"—" }} min</td><td><a href="{% url 'internet:incident_edit' r.pk %}">Editar</a></td></tr>{% empty %}<tr><td colspan="5" class="p-4 text-center">Sin registros</td></tr>{% endfor %}</tbody></table></div>
+{% endblock %}

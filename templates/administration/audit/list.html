@@ -1,0 +1,33 @@
+{% extends "administration/base_dashboard.html" %}
+{% load administration_tags %}
+
+{% block title %}Auditoría | Infraestructura - OTI{% endblock %}
+
+{% block dashboard_content %}
+  <div class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100 sm:p-6">
+    <h1 class="text-xl font-bold text-institutional-navy sm:text-2xl">Auditoría</h1>
+    <p class="mt-1 text-sm text-institutional-muted">Consulta de solo lectura de las operaciones administrativas.</p>
+
+    <form
+      method="get"
+      class="mt-6 grid gap-3 md:grid-cols-2 xl:grid-cols-5"
+      hx-get="{% url 'administration:audit_list' %}"
+      hx-target="#audit-table"
+      hx-push-url="true"
+    >
+      {% for field in form %}
+        <div>
+          <label for="{{ field.id_for_label }}" class="mb-1 block text-xs font-semibold uppercase tracking-wide text-institutional-muted">{{ field.label }}</label>
+          {{ field.as_widget }}
+        </div>
+      {% endfor %}
+      <div class="flex items-end md:col-span-2 xl:col-span-1">
+        <button type="submit" class="w-full rounded-lg bg-slate-100 px-4 py-2 text-sm font-medium text-institutional-navy hover:bg-slate-200">Filtrar</button>
+      </div>
+    </form>
+
+    <div id="audit-table" class="mt-6">
+      {% include "administration/audit/_table.html" %}
+    </div>
+  </div>
+{% endblock %}

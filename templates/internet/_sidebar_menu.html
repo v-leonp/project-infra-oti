@@ -1,0 +1,9 @@
+<div class="pt-2">
+  <p class="px-3 pb-1 text-xs font-semibold uppercase tracking-wide text-white/50">Internet</p>
+  <a href="{% url 'internet:service_list' %}" class="dashboard-nav-link {% if 'service' in request.resolver_match.url_name %}is-active{% endif %}">Servicios</a>
+  <a href="{% url 'internet:contract_list' %}" class="dashboard-nav-link {% if 'contract' in request.resolver_match.url_name %}is-active{% endif %}">Contratos</a>
+  <a href="{% url 'internet:deliverable_list' %}" class="dashboard-nav-link {% if 'deliverable' in request.resolver_match.url_name %}is-active{% endif %}">Entregables</a>
+  <a href="{% url 'internet:incident_list' %}" class="dashboard-nav-link {% if 'incident' in request.resolver_match.url_name %}is-active{% endif %}">Incidencias</a>
+  <a href="{% url 'internet:document_list' %}" class="dashboard-nav-link {% if 'document' in request.resolver_match.url_name %}is-active{% endif %}">Documentos</a>
+  <a href="{% url 'internet:report_list' %}" class="dashboard-nav-link {% if 'report' in request.resolver_match.url_name %}is-active{% endif %}">Reportes</a>
+</div>
